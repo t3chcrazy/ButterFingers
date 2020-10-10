@@ -1,0 +1,19 @@
+.word {
+    padding: 5px;
+    font-size: 15px;
+    color: #000;
+    background: #fff;
+}
+
+.word.active {
+    background: #3498db;
+    color: #fff;
+}
+
+.word.complete.wrong {
+    color: #9b544d;
+}
+
+.word.complete.correct {
+    color: #2ecc71;
+}
