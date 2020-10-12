@@ -138,6 +138,8 @@ function Authenticate() {
         }
     }
 
+    console.log("Here is fb", window.FB)
+
     const matchShow = (type) => show && show === type
 
     const matchMessage = (type) => loginMessage && loginMessage.startsWith(type)
@@ -145,16 +147,8 @@ function Authenticate() {
     return (
         <>
             <div className = "authenticateContainer">
-                <div className = "authenticateColumn">
+                <div>
                     <div className = "title">Butterfingers</div>
-                    <div className = "buttonContainer">
-                        <button onClick = {handleLoginButton}>Login</button>
-                        <button onClick = {handleRegisterButton}>Register</button>
-                        <animated.div className = "bottomIndicator" style = {{
-                            left: value.interpolate(v => `${v/2}rem`)
-                        }}>
-                        </animated.div>
-                    </div>
                     <div className = "featureContainer">
                         {featureAnims.map((anim, ind) => 
                         <animated.div className = "feature" key = {`feature${ind}`} style = {{
@@ -162,6 +156,16 @@ function Authenticate() {
                         }}>
                             {features[ind]}
                         </animated.div>)}
+                    </div>
+                </div>
+                <div>
+                    <div className = "buttonContainer">
+                        <button onClick = {handleLoginButton}>Login</button>
+                        <button onClick = {handleRegisterButton}>Register</button>
+                        <animated.div className = "bottomIndicator" style = {{
+                            left: value.interpolate(v => `${v/2}rem`)
+                        }}>
+                        </animated.div>
                     </div>
                     <div className = "wrapper">
                         <animated.form onSubmit = {handleLogin} className = "animatedForm" style = {{

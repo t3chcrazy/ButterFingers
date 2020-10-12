@@ -96,6 +96,15 @@ function MainPage() {
         history.replace("/")
     }
 
+    const handleFBShare = () => {
+        window.shareFB({
+            display: "popup",
+            method: "share",
+            href: "https://developers.facebook.com/docs/",
+            quote: `I got ${correctRef.current/numWordsTyped()} wpm on Butterfingers! Check it out!`
+        })
+    }
+
     return (
         <div>
             <nav className = "topNav">
@@ -182,6 +191,9 @@ function MainPage() {
                     </div>
                     <button onClick = {handleTrial}>
                         Try again!
+                    </button>
+                    <button onClick = {handleFBShare}>
+                        Share
                     </button>
                 </animated.div>
             </div>

@@ -2,16 +2,6 @@ import React from 'react'
 
 function StatCard({stat, icon}) {
 
-    const mapIcon = () => {
-        switch (icon) {
-            case "bestWpm":
-            case "bestAcc":
-                return require("../assets/winner.svg")
-            default:
-                return require("../assets/winner.svg")
-        }
-    }
-
     const mapTitle = () => {
         switch (icon) {
             case "bestWpm":
@@ -24,15 +14,24 @@ function StatCard({stat, icon}) {
                 return "Mean WPM"
         }
     }
+
+    const mapNum = () => {
+        switch (icon) {
+            case "bestAcc":
+            case "meanAcc":
+                return `${Math.round(stat*10000)/100} %`
+            default:
+                return `${stat} wpm`
+        }
+    }
     
     return (
         <div className = "statCard">
             <div className = "statRow">
-                <img className = "statIcon" src = {mapIcon()} style = {{stroke: "#fff"}} />
-                <div>{Math.round(stat*10)/10}</div>
+                {mapTitle()}
             </div>
             <div className = "statRow">
-                {mapTitle()}
+                <div>{mapNum()}</div>
             </div>
         </div>
     )

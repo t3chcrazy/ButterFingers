@@ -1,3 +1,12 @@
+.loadScreen {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+}
+
 .profileContainer {
     width: 100vw;
     display: flex;

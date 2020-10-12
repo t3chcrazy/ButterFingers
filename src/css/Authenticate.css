@@ -13,14 +13,13 @@ body {
 }
 
 .title {
-    font-size: 2.5rem;
-    font-weight: bold;
+    font-size: 3.5rem;
+    font-weight: bolder;
 }
 
 .authenticateContainer {
     height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
     background: url("../assets/loginBackground.svg");
     background-position: center bottom;
@@ -28,17 +27,17 @@ body {
     background-size: contain;
 }
 
-.authenticateColumn {
+.authenticateContainer > div {
     display: flex;
     flex-flow: column;
+    justify-content: center;
     align-items: center;
-    width: var(--wrapperWidth);
-    height: var(--wrapperHeight);
+    flex: 1;
 }
 
 .buttonContainer {
     display: flex;
-    width: 100%;
+    width: var(--wrapperWidth);
     margin: 1rem 0;
     position: relative;
 }
@@ -132,6 +131,7 @@ body {
     position: absolute;
     text-align: center;
     width: 100%;
+    font-size: 1.5rem;
 }
 
 .formButton {
@@ -175,5 +175,14 @@ div[class^="failure"] {
     }
     100% {
         top: 110%;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .authenticateContainer {
+        flex-flow: column;
+    }
+    .authenticateContainer > div:first-child {
+        justify-content: center;
     }
 }

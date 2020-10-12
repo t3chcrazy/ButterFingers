@@ -1,33 +1,35 @@
-import React, { useEffect, useMemo, useState, useLayoutEffect } from 'react'
+import React, { useEffect, useMemo, useState, useLayoutEffect, useRef } from 'react'
 import StatCard from  '../components/StatCard'
 import StatPlot from '../components/StatPlot'
 import Footer from '../components/Footer'
 import '../css/Profile.css'
 
-const RESULTS = [
-    {
-        id: 1,
-        date: new Date(),
-        wpm: 132,
-        accuracy: 85,
-    },
-    {
-        id: 2,
-        date: new Date(2020, 9, 19),
-        wpm: 89,
-        accuracy: 70,
-    },
-    {
-        id: 3,
-        date: new Date(2020, 9, 20),
-        wpm: 93,
-        accuracy: 91
+
+const calcStats = results => {
+    const resultsLength = results.length
+    let bestWpm = 0
+    let sumWpm = 0
+    let bestAcc = 0
+    let sumAcc = 0
+    results.forEach(r => {
+        const currWpm = r.wpm
+        const currAcc = r.accuracy
+        bestWpm = Math.max(bestWpm, currWpm)
+        bestAcc = Math.max(bestAcc, currAcc)
+        sumWpm += currWpm
+        sumAcc += currAcc
+    })
+    return {
+        bestWpm,
+        bestAcc,
+        meanWpm: sumWpm/resultsLength,
+        meanAcc: sumAcc/resultsLength
     }
-]
+}
 
 function Profile() {
-    const [results, setResults] = useState(() => RESULTS)
-    const [stats, setStats] = useState(null)
+    const [results, setResults] = useState(null)
+    const stats = useRef(null)
     const [width, setWidth] = useState(0)
     const token = useMemo(() => localStorage.getItem("token"), [])
 
@@ -41,7 +43,7 @@ function Profile() {
         return () => window.removeEventListener("resize", updateSize)
     }, [])
 
-    const dateData = useMemo(() => results.map(r => r.date), [])
+    console.log(results && results.records.map(r => new Date(r.date).toUTCString()))
 
     useEffect(() => {
         (async function() {
@@ -53,47 +55,32 @@ function Profile() {
                         token
                     }
                 })
-                const data = await result.json()
                 if (result.status !== 200) {
                     throw Error("User fetch unsuccessfull")
                 }
-                
+                const data = await result.json()
+                const userData = data.data
+                console.log("Here is data", userData)
+                stats.current = calcStats(userData.records)
+                setResults(userData)
             }
             catch (err) {
                 console.log("Error occured", err)
             }
         })()
-        const resultsLength = RESULTS.length
-        let bestWpm = 0
-        let sumWpm = 0
-        let bestAcc = 0
-        let sumAcc = 0
-        RESULTS.forEach(r => {
-            const currWpm = r.wpm
-            const currAcc = r.accuracy
-            bestWpm = Math.max(bestWpm, currWpm)
-            bestAcc = Math.max(bestAcc, currAcc)
-            sumWpm += currWpm
-            sumAcc += currAcc
-        })
-        setStats({
-            bestWpm,
-            bestAcc,
-            meanWpm: sumWpm/resultsLength,
-            meanAcc: sumAcc/resultsLength
-        })
-    }, [])
+    }, [token])
 
     return (
-        <div className = "profileContainer">
+        <>
+            {results !== null? <div className = "profileContainer">
             <div className = "profileBanner">
                 <div className = "userDetails">
-                    <div>Abhishek Prashant</div>
-                    <div>suman4283@gmail.com</div>
+                    <div>{results.name}</div>
+                    <div>{results.email}</div>
                 </div>
                 <div className = "featureContainer">
                     {stats && <div className = "featureRow">
-                        {Object.entries(stats).map((s, i) => <StatCard key = {i} icon = {s[0]} stat = {s[1]} />)}
+                        {Object.entries(stats.current).map((s, i) => <StatCard key = {i} icon = {s[0]} stat = {s[1]} />)}
                     </div>}
                 </div>
             </div>
@@ -101,22 +88,26 @@ function Profile() {
                 <StatPlot
                     color = "green"
                     title = "WPM Plot"
-                    xData = {dateData}
-                    yData = {results.map(r => r.wpm)}
+                    xData = {results.records.map(r => new Date(r.date))}
+                    yData = {results.records.map(r => r.wpm)}
                     currWidth = {width}
                     mean = {stats? stats["meanWpm"]: 0}
                 />
                 <StatPlot
                     color = "red"
                     title = "Accuracy Plot"
-                    xData = {dateData}
-                    yData = {results.map(r => r.accuracy)}
+                    xData = {results.records.map(r => new Date(r.date))}
+                    yData = {results.records.map(r => r.accuracy)}
                     currWidth = {width}
                     mean = {stats? stats["meanAcc"]: 0}
                 />
             </main>
             <Footer />
-        </div>
+            </div>: 
+            <div className = "loadScreen">
+                Loading...
+            </div>}
+        </>
     )
 }
 
